@@ -1,0 +1,24 @@
+#! /bin/bash
+
+REDDIT_URL="$1.json"
+echo "Processing $REDDIT_URL..."
+REDDIT_POST_JSON=`curl -sL -A "NOT-A-BOT" $REDDIT_URL/.json`
+DASH_URL=`echo "$REDDIT_POST_JSON" | jq -r '.[0].data.children[0].data.secure_media.reddit_video.dash_url'`
+if [ $? -ne 0 ]; then
+    echo $REDDIT_POST_JSON
+    exit 1
+fi
+echo "Found $DASH_URL!"
+FILE_NAME=`youtube-dl --get-filename "$DASH_URL" -o "%(title)s.%(ext)s"`
+youtube-dl "$DASH_URL" -o $FILE_NAME
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+azcopy --source "$FILE_NAME" --destination "$CONTAINER_URL/$FILE_NAME" --set-content-type video/mp4 --dest-key "$CONTAINER_KEY"
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+echo "File sucessfully uploaded!"
+echo "$CONTAINER_URL/$FILE_NAME"
+echo "$CONTAINER_URL/$FILE_NAME" > /results.txt
