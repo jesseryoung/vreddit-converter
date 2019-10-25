@@ -3,7 +3,7 @@ FROM jrottenberg/ffmpeg:4.0-ubuntu
 # Download dependencies for youtube-dl and azcopy
 # Include "jq" for parsing Reddit json post
 RUN apt-get -yqq update && \
-    apt-get install -yq --no-install-recommends curl python3 rsync libunwind-dev libicu60 jq && \
+    apt-get install -yq --no-install-recommends curl python3 rsync libunwind-dev libicu60 jq libssl1.0.0 && \
     apt-get autoremove -y && \
     apt-get clean -y
 
