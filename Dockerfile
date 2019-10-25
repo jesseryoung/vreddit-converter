@@ -21,5 +21,6 @@ RUN mkdir /tmp/azcopy/ && cd /tmp/azcopy && \
     rm -rf /tmp/azcopy
 
 ADD process_url /
+RUN chmod +x /process_url
 
 ENTRYPOINT [ "/process_url" ]
